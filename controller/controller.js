@@ -19,12 +19,28 @@ module.exports = {
         })
     },
 
+    async getRepositories(req, res) {
+        const { name } = req.query;
+        await axios.get(`${baseUrl}/users/${name}/repos`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(function(response) {
+            res.send(response.data);
+        }).catch((error) => {
+            res.status(error.response.status).json({
+                message: error.response.data.message
+            });
+        })
+    },
+
     async listAllUserWithPagination(req, res) {
-        const { pagination } = req.query;
+        const { pagination, since } = req.query;
 
         await axios.get(`${baseUrl}/users`, {
             params: {
-                per_page: pagination
+                per_page: pagination,
+                since: since,
             },
             headers: {
                 'Authorization': `Bearer ${token}`
